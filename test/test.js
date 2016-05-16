@@ -26,7 +26,6 @@ var requireHelper = require('./require_helper'),
       let api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
       api.getZones(function(err,data){
         if (err) return console.error(err);
-        console.log(data);
         expect(data[0].constructor.name).to.be.equal('Zone')
         done();
       });
@@ -48,6 +47,8 @@ var requireHelper = require('./require_helper'),
       const zone_name = 'god.org.';
       api.getZone(zone_name, function(err,data){
         expect(err.status).to.be.equal(422);
+        expect(err.path).to.be.equal('/servers/localhost/zones/god.org.');
+        expect(err.reason).to.be.equal('Could not find domain \'god.org\'');
         done();
       });
     });
