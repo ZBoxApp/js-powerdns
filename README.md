@@ -193,10 +193,10 @@ If no match, a new Record is created.
 const record = { "name": "record1.example.org", "content": "192.0.5.1" }
 
 // Add new Record
-zone.modifyOrCreateRecords(record, callback);
+zone.createOrModifyRecords(record, callback);
 
 record.content = '1.1.1.2';
 
 // Modify Record
-zone.modifyOrCreateRecords(record, callback);
+zone.createOrModifyRecords(record, callback);
 ```

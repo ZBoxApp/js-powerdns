@@ -189,6 +189,25 @@ var requireHelper = require('./require_helper'),
         });
       });
 
+      it('Should remove empty records from request', function(done){
+        let api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
+        const records = [
+          {"content": "192.0.5.44", "disabled": false, "name": 'temp3.tempdomain.com', "ttl": 86400, "type": "A" },
+          {"content": "", "disabled": false, "name": 'temp4.tempdomain.com', "ttl": 86400, "type": "A" },
+          {"content": "1.1.1.1", "disabled": false, "name": '', "ttl": 86400, "type": "A" },
+          {"content": "1.1.1.2", "disabled": false, "name": '', "ttl": 86400, "type": "A" },
+          {"content": "1.1.1.4", "disabled": false, "name": 'temp5.tempdomain.com', "ttl": 86400, "type": "A" },
+        ]
+        api.getZone('tempdomain.com.', function(err, tmp_zone){
+          const org_records_size = tmp_zone.records.length;
+          tmp_zone.createOrModifyRecords(records, function(err, zone){
+            if (err) return console.error(err);
+            expect(zone.records.length).to.be.at.most(org_records_size + 2);
+            done();
+          });
+        });
+      });
+
     });
 
   });
