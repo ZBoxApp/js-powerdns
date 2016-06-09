@@ -151,6 +151,25 @@ var requireHelper = require('./require_helper'),
         });
       });
 
+      it('Should return the SOA Record', function(done){
+        let api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
+        api.getZone('tempdomain.com.', function(err, tmp_zone){
+          if (err) return console.error(err);
+          expect(tmp_zone.soa.type).to.be.equal('SOA');
+          done();
+        });
+      });
+
+      it('Should return the SOA Serial', function(done){
+        let api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
+        api.getZone('tempdomain.com.', function(err, tmp_zone){
+          if (err) return console.error(err);
+          const serial = tmp_zone.soa.content.split(/ /)[2];
+          expect(tmp_zone.soaSerial).to.be.equal(serial);
+          done();
+        });
+      });
+
       it('Should modify record from Zone', function(done){
         let api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
         api.getZone('tempdomain.com.', function(err, tmp_zone){
@@ -208,6 +227,19 @@ var requireHelper = require('./require_helper'),
             if (err) return console.error(err);
             expect(zone.constructor.name).to.be.equal('Zone');
             expect(zone.records.length).to.be.at.most(org_records_size + 2);
+            done();
+          });
+        });
+      });
+
+      it('Should update the Zone Serial', function(done){
+        let api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
+        const new_record = {"content": "192.0.5.44", "disabled": false, "name": 'temp3.tempdomain.com', "ttl": 86400, "type": "A" };
+        api.getZone('tempdomain.com.', function(err, tmp_zone){
+          const original_soaSerial = tmp_zone.soaSerial;
+          tmp_zone.createOrModifyRecords(new_record, function(err, zone){
+            if (err) return console.error(err);
+            expect(zone.soaSerial).to.be.above(original_soaSerial);
             done();
           });
         });
