@@ -245,6 +245,20 @@ var requireHelper = require('./require_helper'),
         });
       });
 
+      it('Should not delete the SOA when removing record from Zone', function(done){
+        let api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
+        api.getZone('tempdomain.com.', function(err, tmp_zone){
+          const record = tmp_zone.records[1];
+          const original_soaSerial = tmp_zone.soaSerial;
+          tmp_zone.deleteRecords(record, function(err, zone){
+            if (err) return console.error(err);
+            expect(zone.soa.type).to.be.equal('SOA');
+            expect(zone.soaSerial).to.be.above(original_soaSerial);
+            done();
+          });
+        });
+      });
+
     });
 
   });
