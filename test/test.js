@@ -282,6 +282,29 @@ var requireHelper = require('./require_helper'),
         });
       });
 
+      it('Should add several records using the domain as name', function(done){
+        let api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
+        const new_record1 = {"content": "192.0.5.44", "disabled": false, "name": 'tempdomain.com', "ttl": 86400, "type": "A" };
+        const new_record2 = {"content": "192.0.5.45", "disabled": false, "name": 'tempdomain.com', "ttl": 86400, "type": "A" };
+        api.getZone('tempdomain.com.', function(err, tmp_zone){
+          const org_records_size = tmp_zone.records.length;
+          tmp_zone.createOrModifyRecords([new_record1, new_record2], function(err, zone){
+            if (err) return console.error(err);
+            const records_name = {};
+            zone.records.map((e) => {return e.name})
+             .forEach((name) => {
+               if (records_name[name]) {
+                 records_name[name]++;
+               } else {
+                  records_name[name] = 1;
+               }
+             });
+            expect(records_name['tempdomain.com']).to.be.above(1);
+            done();
+          });
+        });
+      });
+
     });
 
   });
