@@ -1,6 +1,6 @@
 # PowerDNS API Javascript Wrapper
 
-This is a Wrapper for the [PowerDNS REST API](https://doc.powerdns.com/3/httpapi/README/#api-specification).
+This is a Wrapper for the [PowerDNS REST API](https://doc.powerdns.com/3/httpapi/api_spec/).
 
 ### Important NGINX
 Given a [Bug](https://github.com/PowerDNS/pdns/issues/3723) on PowerDNS, we are using NGINX
