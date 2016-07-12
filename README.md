@@ -65,6 +65,10 @@ const zone_data = {
 api.createZoneWithRecords(zone_data, records, callback);
 ```
 
+Info from:
+* [https://n40lab.wordpress.com/2015/05/16/centos-7-using-the-powerdns-web-api-to-add-and-edit-records/](https://n40lab.wordpress.com/2015/05/16/centos-7-using-the-powerdns-web-api-to-add-and-edit-records/)
+* [http://powerdns.13854.n7.nabble.com/soa-edit-api-td11704.html](http://powerdns.13854.n7.nabble.com/soa-edit-api-td11704.html)
+
 ## Example
 
 First, instantiate the wrapper.
