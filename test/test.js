@@ -59,7 +59,7 @@ var requireHelper = require('./require_helper'),
     it('should create the Zone', function(done){
       let api = new jsPowerdns({ url: 'http://127.0.0.1:6081', token: 'otto' });
       const zone_name = Date.now() + '.com.';
-      const zone_data = { name: zone_name, kind: 'Master', nameservers: [] }
+      const zone_data = { name: zone_name, kind: 'Master', nameservers: [], 'soa_edit': 'DEFAULT', 'soa_edit_api': 'DEFAULT' }
       api.createZone(zone_data, function(err,data){
         if (err) return console.error(err);
         expect(data.constructor.name).to.be.equal('Zone');
