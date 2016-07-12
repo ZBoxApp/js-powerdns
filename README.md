@@ -31,12 +31,39 @@ server {
 ```
 
 ## Table of Contents
+- [SOA Serial Update](#soa-serial-update)
 - [Example](#example)
 - [Install](#install)
 - [Callback](#callback)
 - [Errors](#errors)
 - [Common Functions](#common-functions)
 
+
+## SOA Serial Update
+The PowerDNS API can update the serial number for you automatically, but for this you
+**must** create the zone whit the options `soa_edit_api: 'DEFAULT'`, like:
+
+```javascript
+const jsPowerdns = require('js-powerdns');
+const api = new jsPowerdns({ url: 'http://127.0.0.1:8081', token: 'otto' });
+const zone_name = 'tempdomain.com.';
+const soa = {
+  "name": "tempdomain.com",
+  "type": "SOA",
+  "content": "ns1.tempdomain.com root.tempdomain.com 0 10800 3600 604800 3600",
+  "disabled": false,
+  "ttl": 86400,
+  "priority": 0
+};
+const records = [ soa ];
+const zone_data = {
+  'name': zone_name,
+  'soa_edit': 'DEFAULT', 'soa_edit_api': 'DEFAULT', // <== THIS IS THE SAUCE
+  'kind': 'Master', nameservers: ['ns1.tempdomain.com'],
+  'masters': []
+};
+api.createZoneWithRecords(zone_data, records, callback);
+```
 
 ## Example
 
