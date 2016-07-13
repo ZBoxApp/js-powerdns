@@ -71,6 +71,37 @@ var requireHelper = require('./require_helper'),
       });
     });
 
+    it('should use Template to create the Zone', function(done){
+      let api = new jsPowerdns({ url: 'http://127.0.0.1:6081', token: 'otto' });
+      const zone_name = Date.now() + '.com';
+      const zone_template = {
+        zone_data: {
+          kind: 'Master', nameservers: ['ns1.tempdomain.com'],
+          'soa_edit': 'DEFAULT', 'soa_edit_api': 'DEFAULT', masters: []
+        },
+        zone_records: [
+          {"name": zone_name, "type": "SOA", "content": `ns1.${zone_name} root.${zone_name} 0 10800 3600 604800 3600`, "disabled": false, "ttl": 86400, "priority": 0 },
+          {"name": `ns1.${zone_name}`, "type": "NS", "content": "1.1.1.1", "disabled": false, "ttl": 86400, "priority": 0 },
+          {"name": `ns2.${zone_name}`, "type": "NS", "content": "1.1.1.2", "disabled": false, "ttl": 86400, "priority": 0 },
+          {"name": `mx.${zone_name}`, "type": "MX", "content": "10 1.1.1.3", "disabled": false, "ttl": 86400, "priority": 5 }
+        ]
+      };
+
+      const zone_data = { name: `${zone_name}`, template: zone_template};
+
+      api.createZone(zone_data, function(err,data){
+        if (err) return console.error(err);
+        expect(data.constructor.name).to.be.equal('Zone');
+        api.getZone(zone_name, function(err, zone){
+          if (err) return console.error(err);
+          expect(zone.name).to.be.equal(zone_name + '.');
+          expect(zone.records.length).to.be.above(3);
+          expect(zone.records[3].type).to.be.equal('NS');
+          done();
+        });
+      });
+    });
+
     it('should return error without Nameservers', function(done){
       let api = new jsPowerdns({ url: 'http://127.0.0.1:6081', token: 'otto' });
       const zone_name = Date.now() + '.com.';

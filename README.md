@@ -33,6 +33,7 @@ server {
 ## Table of Contents
 - [SOA Serial Update](#soa-serial-update)
 - [Example](#example)
+- [Using Templates](#using-templates)
 - [Install](#install)
 - [Callback](#callback)
 - [Errors](#errors)
@@ -87,6 +88,46 @@ api.getZones(callback);
 
 jsPowerdns.version();
 // "0.0.1"
+```
+
+## Using Templates
+If you use to create `Zones` with same content you can use a `Zone Template`.
+
+A Zone Template is just a JSON object with the data you want to repeat, like the
+following example:
+
+```javascript
+const zoneTemplate = {
+  zone_data: {
+    kind: 'Master',
+    nameservers: ['ns1.example.com', 'ns2.example.com'],
+    soa_edit: 'DEFAULT',
+    soa_edit_api: 'DEFAULT',
+    masters: []
+  },
+  zone_records:
+  [
+    {
+      name: 'example.com', type: 'SOA', content: 'ns1.example.com root.example.com 0 10800 3600 604800 3600', disabled: false, ttl: 86400, priority: 0
+    },
+    {
+      name: 'ns1.example.com', type: 'NS', content: '1.1.1.1', disabled: false, ttl: 86400, priority: 0
+    },
+    {
+      name: 'ns2.example.com', type: 'NS', content: '1.1.1.2', disabled: false, ttl: 86400, priority: 0
+    },
+    {
+      name: 'mx.example.com', type: 'MX', content: '10 1.1.1.3', disabled: false, ttl: 86400, priority: 5
+    }
+  ]
+};
+```
+
+Now you can use the template, `zoneTemplate` when creating a new `Zone`, like this:
+
+```javascript
+const zoneData = { name: 'example.com', template: zoneTemplate };
+api.createZone(zoneData, callback);
 ```
 
 ## Install
