@@ -93,8 +93,17 @@ jsPowerdns.version();
 ## Using Templates
 If you use to create `Zones` with same content you can use a `Zone Template`.
 
-A Zone Template is just a JSON object with the data you want to repeat, like the
-following example:
+A Zone Template is just a JSON object and the variable `{{=zone.name}}` which will
+take the zone name.
+
+For Example:
+
+```javascript
+const zoneData = { name: 'example.com', template: zoneTemplate };
+api.createZone(zoneData, callback);
+```
+
+And the `zoneTemplate` is:
 
 ```javascript
 const zoneTemplate = {
@@ -108,26 +117,22 @@ const zoneTemplate = {
   zone_records:
   [
     {
-      name: 'example.com', type: 'SOA', content: 'ns1.example.com root.example.com 0 10800 3600 604800 3600', disabled: false, ttl: 86400, priority: 0
+      name: '{{=zone.name}}', type: 'SOA', content: 'ns1.{{=zone.name}} root.{{=zone.name}} 0 10800 3600 604800 3600', disabled: false, ttl: 86400, priority: 0
     },
     {
-      name: 'ns1.example.com', type: 'NS', content: '1.1.1.1', disabled: false, ttl: 86400, priority: 0
+      name: '{{=zone.name}}', type: 'NS', content: '1.1.1.1', disabled: false, ttl: 86400, priority: 0
     },
     {
-      name: 'ns2.example.com', type: 'NS', content: '1.1.1.2', disabled: false, ttl: 86400, priority: 0
+      name: '{{=zone.name}}', type: 'NS', content: '1.1.1.2', disabled: false, ttl: 86400, priority: 0
     },
     {
-      name: 'mx.example.com', type: 'MX', content: '10 1.1.1.3', disabled: false, ttl: 86400, priority: 5
+      name: '{{=zone.name}}', type: 'MX', content: '10 1.1.1.3', disabled: false, ttl: 86400, priority: 5
+    },
+    {
+      name: 'www.{{=zone.name}}', type: 'A', content: '1.1.1.1', disabled: false, ttl: 86400, priority: 5
     }
   ]
 };
-```
-
-Now you can use the template, `zoneTemplate` when creating a new `Zone`, like this:
-
-```javascript
-const zoneData = { name: 'example.com', template: zoneTemplate };
-api.createZone(zoneData, callback);
 ```
 
 ## Install

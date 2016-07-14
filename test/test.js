@@ -76,14 +76,15 @@ var requireHelper = require('./require_helper'),
       const zone_name = Date.now() + '.com';
       const zone_template = {
         zone_data: {
-          kind: 'Master', nameservers: ['ns1.tempdomain.com'],
+          kind: 'Master', nameservers: ['ns1.tempdomain.com', 'ns2.example.com'],
           'soa_edit': 'DEFAULT', 'soa_edit_api': 'DEFAULT', masters: []
         },
         zone_records: [
-          {"name": zone_name, "type": "SOA", "content": `ns1.${zone_name} root.${zone_name} 0 10800 3600 604800 3600`, "disabled": false, "ttl": 86400, "priority": 0 },
-          {"name": `ns1.${zone_name}`, "type": "NS", "content": "1.1.1.1", "disabled": false, "ttl": 86400, "priority": 0 },
-          {"name": `ns2.${zone_name}`, "type": "NS", "content": "1.1.1.2", "disabled": false, "ttl": 86400, "priority": 0 },
-          {"name": `mx.${zone_name}`, "type": "MX", "content": "10 1.1.1.3", "disabled": false, "ttl": 86400, "priority": 5 }
+          {"name": "{{=zone.name}}", "type": "SOA", "content": "ns1.{{=zone.name}} root.{{=zone.name}} 0 10800 3600 604800 3600", "disabled": false, "ttl": 86400, "priority": 0 },
+          {"name": "{{=zone.name}}", "type": "NS", "content": "ns1.example.com", "disabled": false, "ttl": 86400, "priority": 0 },
+          {"name": "{{=zone.name}}", "type": "NS", "content": "ns2.example.com", "disabled": false, "ttl": 86400, "priority": 0 },
+          {"name": "{{=zone.name}}", "type": "MX", "content": "10 mx.example.com", "disabled": false, "ttl": 86400, "priority": 5 },
+          {"name": "www.{{=zone.name}}", "type": "A", "content": "1.1.1.1", "disabled": false, "ttl": 86400, "priority": 5 },
         ]
       };
 
@@ -96,7 +97,8 @@ var requireHelper = require('./require_helper'),
           if (err) return console.error(err);
           expect(zone.name).to.be.equal(zone_name + '.');
           expect(zone.records.length).to.be.above(3);
-          expect(zone.records[3].type).to.be.equal('NS');
+          const zoneRecordsTypes = zone.records.map((z) => {return z.type});
+          expect(zoneRecordsTypes.sort()).to.be.deep.equal(['A', 'MX', 'NS', 'NS', 'SOA']);
           done();
         });
       });

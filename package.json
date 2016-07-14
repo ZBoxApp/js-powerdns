@@ -1,6 +1,6 @@
 {
   "name": "js-powerdns",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A PowerDNS js wrapper",
   "main": "lib/index.js",
   "repository": {
@@ -39,6 +39,7 @@
     "webpack": "^1.13.0"
   },
   "dependencies": {
+    "dot": "^1.0.3",
     "http": "0.0.0",
     "options-api": "^1.1.0",
     "superagent": "^1.8.3",
